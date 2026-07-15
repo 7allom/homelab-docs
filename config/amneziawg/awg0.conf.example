@@ -1,0 +1,17 @@
+[Interface]
+Address = 10.99.99.1/24
+ListenPort = 51820
+PrivateKey = YOUR_private_key
+Jc = 4
+Jmin = 50
+Jmax = 1000
+S1 = 70
+S2 = 40
+H1 = 205634591
+H2 = 328080004
+H3 = 111166345
+H4 = 824364230
+
+[Peer]
+PublicKey = PEER_public_key
+AllowedIPs = 10.99.99.2/32

@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Weekly Docker Containers Configuration Backup Timer
+
+[Timer]
+OnCalendar=Sun *-*-* 00:00:00
+Persistent=true
+Unit=container-backup.service
+
+[Install]
+WantedBy=timers.target

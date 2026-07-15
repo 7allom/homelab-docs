@@ -1,0 +1,9 @@
+[Unit]
+Description=Weekly Docker Containers Configuration Backup
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/bash -c '/usr/bin/tar -czf /home/user/containers_backup.tar.gz --exclude="*/cache" /home/user/containers && /usr/bin/rclone copy /home/user/containers_backup.tar.gz config_secure: --update --config="/home/user/.config/rclone/rclone.conf"'
+[Install]
+WantedBy=multi-user.target

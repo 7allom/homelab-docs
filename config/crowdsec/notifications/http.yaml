@@ -1,0 +1,34 @@
+type: http
+name: local_ntfy_alert
+log_level: info
+# Points to local Docker container via the host port 8095
+url: https://ntfy.abdulhaleem.duckdns.org/my-pc-security-alerts-99
+method: POST
+headers:
+  Title: "CrowdSec: Threat Neutralized"
+  Tags: "shield,warning"
+  Priority: "high"
+# clean readable text that will push to notification to phone
+format: |
+  {{range . -}}
+  {{$alert := . -}}
+  THREAT NEUTRALIZED
+
+  Reason: {{$alert.Scenario}}
+  Hits: {{$alert.EventsCount}} attempts
+  Time: {{$alert.CreatedAt}}
+  Node: {{$alert.MachineID}}
+
+  {{if $alert.Source -}}
+  IP: {{$alert.Source.IP}}
+  Org: {{if $alert.Source.AsName}}{{$alert.Source.AsName}}{{else}}Unknown{{end}}
+  Country: {{if $alert.Source.Cn}}{{$alert.Source.Cn}}{{else}}Unknown{{end}}
+  GPS: {{if $alert.Source.Latitude}}{{$alert.Source.Latitude}}, {{$alert.Source.Longitude}}{{else}}Unknown{{end}}
+  {{else -}}
+  IP: Unknown (Test Payload)
+  {{end -}}
+
+  {{range $alert.Decisions -}}
+  Action: {{.Type}} for {{.Duration}}
+  {{end -}}
+  {{end -}}

@@ -1,0 +1,6 @@
+[Unit]
+Description=Safely Encrypt and Backup Vaultwarden to Cloudflare R2
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/backup_vault.sh

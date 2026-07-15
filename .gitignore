@@ -1,0 +1,6 @@
+.env
+*.env
+!.env.example
+rclone.conf
+*.tar.gz
+.DS_Store

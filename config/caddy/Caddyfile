@@ -1,0 +1,66 @@
+# 1. Define the reusable VPN-only security snippet
+(vpn_only) {
+    @denied not remote_ip 10.99.99.0/24 127.0.0.1 172.18.0.0/16 192.168.0.109
+    abort @denied
+}
+
+# 2. Grab ONE master wildcard certificate
+*.YOUR_DOMAIN.duckdns.org {
+    tls {
+        dns duckdns {env.DUCKDNS_TOKEN}
+    }
+
+    # 3. Route traffic internally based on the subdomain requested
+    @vault host vault.YOUR_DOMAIN.duckdns.org
+    handle @vault {
+        reverse_proxy vaultwarden:80
+    }
+
+    @qbit host qbit.YOUR_DOMAIN.duckdns.org
+    handle @qbit {
+        import vpn_only
+        reverse_proxy qbittorrent:8090
+    }
+
+    @portainer host portainer.YOUR_DOMAIN.duckdns.org
+    handle @portainer {
+        import vpn_only
+        reverse_proxy portainer:9000
+    }
+
+    @sonarr host sonarr.YOUR_DOMAIN.duckdns.org
+    handle @sonarr {
+        import vpn_only
+        reverse_proxy sonarr:8989
+    }
+
+    @radarr host radarr.YOUR_DOMAIN.duckdns.org
+    handle @radarr {
+        import vpn_only
+        reverse_proxy radarr:7878
+    }
+
+    @prowlarr host prowlarr.YOUR_DOMAIN.duckdns.org
+    handle @prowlarr {
+        import vpn_only
+        reverse_proxy prowlarr:9696
+    }
+
+    @bazarr host bazarr.YOUR_DOMAIN.duckdns.org
+    handle @bazarr {
+        import vpn_only
+        reverse_proxy bazarr:6767
+    }
+
+    @jellyseerr host jellyseerr.YOUR_DOMAIN.duckdns.org
+    handle @jellyseerr {
+        import vpn_only
+        reverse_proxy jellyseerr:5055
+    }
+
+    @ntfy host ntfy.YOUR_DOMAIN.duckdns.org
+    handle @ntfy {
+        import vpn_only
+        reverse_proxy ntfy:80
+    }
+}

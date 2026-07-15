@@ -1,0 +1,221 @@
+x-logging: &default-logging
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  adguardhome:
+    image: adguard/adguardhome:latest
+    container_name: adguardhome
+    restart: unless-stopped
+    volumes:
+      - ${DOCKER_ROOT}/adguardhome/work:/opt/adguardhome/work
+      - ${DOCKER_ROOT}/adguardhome/conf:/opt/adguardhome/conf
+    ports:
+      - "192.168.0.109:53:53/tcp"
+      - "192.168.0.109:53:53/udp"
+      - "192.168.0.109:3000:3000/tcp"
+      - "192.168.0.109:8083:80/tcp"
+    environment:
+      - TZ=${TZ}
+
+  caddy:
+    image: serfriz/caddy-duckdns:latest
+    container_name: caddy
+    <<: *default-logging
+    environment:
+      - TZ=${TZ}
+      - DUCKDNS_TOKEN=${DUCKDNS_TOKEN}
+    volumes:
+      - ${DOCKER_ROOT}/caddy/data:/data
+      - ${DOCKER_ROOT}/caddy/config:/config
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    ports:
+      - 80:80
+      - 443:443
+    restart: unless-stopped
+    networks:
+      default:
+        ipv4_address: 172.18.0.200
+
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    <<: *default-logging
+    environment:
+      - TZ=${TZ}
+      - WEBSOCKET_ENABLED=true
+      - SIGNUPS_ALLOWED=false
+    volumes:
+      - ${DOCKER_ROOT}/vaultwarden/data:/data
+    restart: unless-stopped
+
+  ntfy:
+    image: binwiederhier/ntfy:latest
+    container_name: ntfy
+    <<: *default-logging
+    environment:
+      - TZ=${TZ}
+    command: serve
+    restart: unless-stopped
+
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    <<: *default-logging
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKER_ROOT}/jellyfin/config:/config
+      - ${DOCKER_ROOT}/jellyfin/cache:/cache
+      - ${MEDIA_ROOT}:/media
+      - /mnt/data/personalMedia:/personal
+      - ${HDD_ROOT}:/vault
+    devices:
+      - /dev/dri:/dev/dri
+    ports:
+      - 8096:8096
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 4096M
+    restart: unless-stopped
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:libtorrentv1
+    container_name: qbittorrent
+    <<: *default-logging
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEBUI_PORT=8090
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    volumes:
+      - ${DOCKER_ROOT}/qbittorrent/config:/config
+      - ${MEDIA_ROOT}:/data
+      - /mnt/data/personalMedia:/personal
+      - ${HDD_ROOT}:/vault
+    ports:
+      - 55555:55555
+      - 55555:55555/udp
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2048M
+    restart: unless-stopped
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    <<: *default-logging
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKER_ROOT}/prowlarr/config:/config
+    restart: unless-stopped
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    <<: *default-logging
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKER_ROOT}/radarr/config:/config
+      - ${MEDIA_ROOT}:/data
+      - ${HDD_ROOT}:/vault
+      - /mnt/data/personalMedia:/personal
+    restart: unless-stopped
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    <<: *default-logging
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKER_ROOT}/sonarr/config:/config
+      - ${MEDIA_ROOT}:/data
+      - ${HDD_ROOT}:/vault
+      - /mnt/data/personalMedia:/personal
+    restart: unless-stopped
+
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    <<: *default-logging
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKER_ROOT}/jellyseerr/config:/app/config
+    restart: unless-stopped
+
+  flaresolverr:
+    image: flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    <<: *default-logging
+    environment:
+      - LOG_LEVEL=info
+      - TZ=${TZ}
+    restart: unless-stopped
+
+  discord-bot:
+    build: ./discord-bot
+    container_name: bot-instance
+    <<: *default-logging
+    network_mode: host
+    restart: unless-stopped
+    env_file:
+      - ./discord-bot/.env
+    volumes:
+      - ${DOCKER_ROOT}/discord-bot/data:/app/data
+
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:lts
+    <<: *default-logging
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    <<: *default-logging
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKER_ROOT}/bazarr/config:/config
+      - ${MEDIA_ROOT}:/data
+      - ${HDD_ROOT}:/vault
+      - /mnt/data/personalMedia:/personal
+    restart: unless-stopped
+
+# --- GLOBAL DEFINITIONS ---
+volumes:
+  portainer_data:
+    name: portainer_data
+
+networks:
+  default:
+    name: portainer_network
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
