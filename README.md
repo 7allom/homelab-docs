@@ -27,6 +27,9 @@ Configuration conventions: [Environment Variables](docs/Environment_Variables_Te
 - Acquisition: `prowlarr`, `flaresolverr`, `qbittorrent`
 - [Full writeup](docs/Docker_Arr_Stack.md)
 
+**Family storage**
+- `nextcloud`: self-hosted Drive replacement, per-user accounts and quotas, VPN-only. [Details](docs/Nextcloud_Setup.md)
+
 **Utilities**
 - `ntfy`: push notifications, integrated with CrowdSec alerting
 - `bot-instance`: custom Discord bot ([details](docs/Docker_Bot_Instance.md))
