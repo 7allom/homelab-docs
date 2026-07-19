@@ -11,6 +11,8 @@ H1 = 205634591
 H2 = 328080004
 H3 = 111166345
 H4 = 824364230
+PostUp = iptables -t nat -A POSTROUTING -s 10.99.99.0/24 -o eth0 -j MASQUERADE
+PostDown = iptables -t nat -D POSTROUTING -s 10.99.99.0/24 -o eth0 -j MASQUERADE
 
 [Peer]
 PublicKey = PEER_public_key

@@ -12,22 +12,29 @@ sudo awg-quick down awg0    # stop
 sudo awg                    # status
 ```
 
-## Adding a mobile peer
+## Adding a peer
+
+Works the same for a phone or a laptop, just change `PEER_NAME` and bump the octet. Pulls the obfuscation parameters (`Jc`, `Jmin`, `Jmax`, `S1`, `S2`, `H1`-`H4`) straight from the server config instead of copying them by hand, since those have to match exactly between the server and every peer or the handshake fails.
 
 ```bash
+PEER_NAME="laptop"        # or "mobile", "tablet", whatever
+PEER_OCTET="4"            # next free number, check awg0.conf for what's already used
+
 CLIENT_PRIV=$(awg genkey)
 CLIENT_PUB=$(echo "$CLIENT_PRIV" | awg pubkey)
 SERVER_PUB=$(sudo awg show awg0 public-key)
+OBFUSCATION_PARAMS=$(sudo grep -E "^(Jc|Jmin|Jmax|S1|S2|H1|H2|H3|H4)" /etc/amnezia/amneziawg/awg0.conf)
 
-sudo awg set awg0 peer "$CLIENT_PUB" allowed-ips 10.99.99.3/32
-echo -e "\n[Peer]\nPublicKey = $CLIENT_PUB\nAllowedIPs = 10.99.99.3/32" | sudo tee -a /etc/amnezia/amneziawg/awg0.conf > /dev/null
+sudo awg set awg0 peer "$CLIENT_PUB" allowed-ips 10.99.99.${PEER_OCTET}/32
+echo -e "\n[Peer]\nPublicKey = $CLIENT_PUB\nAllowedIPs = 10.99.99.${PEER_OCTET}/32" | sudo tee -a /etc/amnezia/amneziawg/awg0.conf > /dev/null
 
-cat > ~/mobile-client.conf << EOF
+cat > ~/${PEER_NAME}-client.conf << EOF
 [Interface]
 PrivateKey = $CLIENT_PRIV
-Address = 10.99.99.3/32
+Address = 10.99.99.${PEER_OCTET}/32
 # Points to AdGuard Home on the host LAN for internal resolution
 DNS = 192.168.0.109
+$OBFUSCATION_PARAMS
 
 [Peer]
 PublicKey = $SERVER_PUB
@@ -37,4 +44,6 @@ PersistentKeepalive = 25
 EOF
 ```
 
-Increment the last octet of `10.99.99.x` for each additional peer. Import the resulting config into the AmneziaWG mobile client, or convert it to a QR code with `qrencode`.
+For mobile, import the resulting `.conf` into the AmneziaWG app directly, or convert it to a QR code with `qrencode` so you don't have to transfer a file. For a laptop, `scp` the file over from the server (same LAN, rides on the existing SSH port, nothing new to open) and either import it through the AmneziaWG desktop client or bring it up directly with `sudo awg-quick up ~/laptop-client.conf`.
+
+Delete the generated `.conf` off the server once it's transferred, it contains the peer's private key and has no reason to sit there afterward.
