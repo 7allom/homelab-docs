@@ -6,6 +6,19 @@ Bare-metal VPN, run outside of Docker. While standard WireGuard is exceptionally
 - Port: `51820/udp`
 - Service: `sudo systemctl enable --now awg-quick@awg0`
 
+### Firewall and Routing Rules (PostUp / PostDown)
+
+To allow connected clients to access the internet, `iptables` routing rules are required within the interface configuration.
+
+**Configuration:**
+```ini
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -s 10.99.99.0/24 -o enp4s0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -s 10.99.99.0/24 -o enp4s0 -j MASQUERADE
+```
+
+* `iptables -A FORWARD -i %i -j ACCEPT` & `-o %i`: Permits traffic to be forwarded in and out of the `awg0` interface.
+* `iptables -t nat -A POSTROUTING ... -j MASQUERADE`: Translates the VPN peer IP addresses to the host's outgoing interface (`enp4s0`).
+
 ```bash
 sudo awg-quick up awg0      # start
 sudo awg-quick down awg0    # stop
