@@ -10,6 +10,9 @@ sudo ufw default allow outgoing
 sudo ufw allow 22/tcp        # SSH
 sudo ufw allow 51820/udp     # AmneziaWG
 
+sudo ufw allow from 192.168.0.0/24 to any port 445   # Samba, LAN
+sudo ufw allow from 10.99.99.0/24 to any port 445    # Samba, VPN
+
 sudo ufw enable
 sudo ufw status verbose
 ```
