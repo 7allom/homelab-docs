@@ -1,0 +1,17 @@
+[global]
+  workgroup = WORKGROUP
+  server string = Homelab Family Storage
+  security = user
+  map to guest = never
+
+  [person1]
+     path = /mnt/data/family-files/person1
+     valid users = person1
+     read only = no
+     browsable = yes
+
+  [shared]
+     path = /mnt/data/family-files/shared
+     valid users = person1, person2, user
+     read only = no
+     browsable = yes

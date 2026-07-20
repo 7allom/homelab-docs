@@ -28,7 +28,7 @@ Configuration conventions: [Environment Variables](docs/Environment_Variables_Te
 - [Full writeup](docs/Docker_Arr_Stack.md)
 
 **Family storage**
-- `nextcloud`: self-hosted Drive replacement, per-user accounts and quotas, VPN-only. [Details](docs/Nextcloud_Setup.md)
+- Samba: per-user network shares with Btrfs qgroup quotas, host-level service rather than a container. [Details](docs/Samba_Family_Storage.md)
 
 **Utilities**
 - `ntfy`: push notifications, integrated with CrowdSec alerting

@@ -208,50 +208,6 @@ services:
       - /mnt/data/personalMedia:/personal
     restart: unless-stopped
 
-  nextcloud-db:
-    image: postgres:17
-    container_name: nextcloud-db
-    <<: *default-logging
-    environment:
-      - POSTGRES_DB=nextcloud
-      - POSTGRES_USER=nextcloud
-      - POSTGRES_PASSWORD=${NEXTCLOUD_DB_PASSWORD}
-    volumes:
-      - ${DOCKER_ROOT}/nextcloud/db:/var/lib/postgresql/data
-    restart: unless-stopped
-
-  nextcloud-redis:
-    image: redis:alpine
-    container_name: nextcloud-redis
-    <<: *default-logging
-    restart: unless-stopped
-
-  nextcloud:
-    image: nextcloud:latest
-    container_name: nextcloud
-    <<: *default-logging
-    depends_on:
-      - nextcloud-db
-      - nextcloud-redis
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - POSTGRES_HOST=nextcloud-db
-      - POSTGRES_DB=nextcloud
-      - POSTGRES_USER=nextcloud
-      - POSTGRES_PASSWORD=${NEXTCLOUD_DB_PASSWORD}
-      - REDIS_HOST=nextcloud-redis
-      - NEXTCLOUD_TRUSTED_DOMAINS=cloud.YOUR_DOMAIN.duckdns.org
-      - OVERWRITEPROTOCOL=https
-      - OVERWRITEHOST=cloud.YOUR_DOMAIN.duckdns.org
-      - OVERWRITECLIURL=https://cloud.YOUR_DOMAIN.duckdns.org
-      - TRUSTED_PROXIES=172.18.0.0/16
-    volumes:
-      - ${DOCKER_ROOT}/nextcloud/html:/var/www/html
-      - /mnt/data/family-files:/var/www/html/data
-    restart: unless-stopped
-
 # --- GLOBAL DEFINITIONS ---
 volumes:
   portainer_data:
