@@ -3,6 +3,9 @@
   server string = Homelab Family Storage
   security = user
   map to guest = never
+  hosts allow = 192.168.0.0/24 10.99.99.0/24
+  hosts deny = 0.0.0.0/0
+  smb encrypt = required
 
   [person1]
      path = /mnt/data/family-files/person1

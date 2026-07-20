@@ -23,6 +23,9 @@ sudo tee /etc/samba/smb.conf << 'EOF'
    server string = Homelab Family Storage
    security = user
    map to guest = never
+   hosts allow = 192.168.0.0/24 10.99.99.0/24
+   hosts deny = 0.0.0.0/0
+   smb encrypt = required
 EOF
 ```
 
@@ -30,6 +33,8 @@ If `testparm` then errors with a generic "Error loading services" and no detail,
 ```bash
 sudo chmod 644 /etc/samba/smb.conf
 ```
+
+`hosts allow`/`hosts deny` restricts connections to the LAN and VPN subnets directly inside Samba itself, on top of the UFW rules further down. `smb encrypt = required` forces SMB3 transport encryption, on top of the VPN's own encryption.
 
 ## Storage and quotas (Btrfs)
 
@@ -114,4 +119,12 @@ Linux: `smb://192.168.0.109/person1` in the file manager, or `smbclient //192.16
 
 Both prompt for the Samba username and password set with `smbpasswd`, separate from any system login. Files opened directly from the mounted share edit in place over the network, no download-edit-reupload step, that part works the same as any local file.
 
-Worth testing that `valid users` is actually being enforced, not just present in the config, by logging in as one person and confirming they can't browse into someone else's share.
+## Verifying the permission boundary
+
+`smbclient -L` lists every share on the server regardless of who's asking, `valid users` controls whether a connection actually succeeds, not what shows up in the listing.
+
+The real test is trying to connect into a share you shouldn't have access to:
+```bash
+smbclient //localhost/PERSON2 -U person1
+```
+A correctly enforced boundary returns `tree connect failed: NT_STATUS_ACCESS_DENIED`.
