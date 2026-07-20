@@ -19,7 +19,7 @@ PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACC
 * `iptables -A FORWARD -i %i -j ACCEPT` & `-o %i`: Permits traffic to be forwarded in and out of the `awg0` interface.
 * `iptables -t nat -A POSTROUTING ... -j MASQUERADE`: Translates the VPN peer IP addresses to the host's outgoing interface (`enp4s0`).
 
-> i thought it was a dns problem because it's always dns but it seems it was not
+> Looked like a DNS issue at first (because it's always DNS), turned out to be missing FORWARD and MASQUERADE rules, UFW drops forwarded traffic by default unless explicitly allowed.
 
 ```bash
 sudo awg-quick up awg0      # start
