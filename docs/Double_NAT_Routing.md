@@ -8,8 +8,7 @@ Because of this physical isolation, remote access requires forwarding through bo
 A systemd timer updates DuckDNS with the current IPv4/IPv6 address every 5 minutes. See [DuckDNS Automation](docs/DuckDNS_Automation.md).
 
 ## Routing path
-Only two services cross the double NAT:
-- TCP 80/443 to Caddy, for web traffic and SSL
+Only one service cross the double NAT:
 - UDP 51820 to the AmneziaWG interface
 
 AmneziaWG's native obfuscation removes the need to disguise the tunnel on port 443, since it isn't identifiable as VPN traffic to begin with.
