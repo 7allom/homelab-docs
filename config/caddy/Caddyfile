@@ -1,3 +1,12 @@
+{
+    admin 0.0.0.0:2019
+    servers {
+        metrics {
+            per_host
+        }
+    }
+}
+
 # 1. Define the reusable VPN-only security snippet
 (vpn_only) {
     @denied not remote_ip 10.99.99.0/24 127.0.0.1 172.18.0.0/16 192.168.0.109
@@ -62,5 +71,11 @@
     handle @ntfy {
         import vpn_only
         reverse_proxy ntfy:80
+    }
+
+    @grafana host grafana.YOUR_DOMAIN.duckdns.org
+    handle @grafana {
+        import vpn_only
+        reverse_proxy grafana:3000
     }
 }

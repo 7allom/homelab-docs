@@ -30,6 +30,9 @@ Configuration conventions: [Environment Variables](docs/Environment_Variables_Te
 **Family storage**
 - Samba: per-user network shares with Btrfs qgroup quotas, host-level service rather than a container. [Details](docs/Samba_Family_Storage.md)
 
+**Monitoring**
+- `prometheus`, `grafana`, `alloy`: host, container, and reverse proxy metrics, dashboards. [Details](docs/Monitoring_Prometheus_Grafana_Alloy.md)
+
 **Utilities**
 - `ntfy`: push notifications, integrated with CrowdSec alerting
 - `bot-instance`: custom Discord bot ([details](docs/Docker_Bot_Instance.md))
