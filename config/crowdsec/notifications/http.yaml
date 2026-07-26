@@ -2,7 +2,7 @@ type: http
 name: local_ntfy_alert
 log_level: info
 # Points to local Docker container via the host port 8095
-url: https://ntfy.abdulhaleem.duckdns.org/my-pc-security-alerts-99
+url: https://ntfy.YOUR_DOMAIN.duckdns.org/YOUR_NTFY_TOPIC
 method: POST
 headers:
   Title: "CrowdSec: Threat Neutralized"
