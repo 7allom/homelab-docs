@@ -1,5 +1,5 @@
 # Homelab Infrastructure & Routing
-
+![Architecture overview](docs/assets/architecture.svg)
 Documentation for a self-hosted home server running on CachyOS. The architecture centers on containerized service management, strict edge routing, and keeping internal services off the LAN entirely. Access is gated through a bare-metal VPN and a reverse proxy rather than exposed ports.
 
 ## Network & Edge
