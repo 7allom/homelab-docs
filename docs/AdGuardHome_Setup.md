@@ -26,11 +26,11 @@ Drop this block at the very top of the file:
 [Unit]
 Wants=network-online.target
 After=network-online.target
-RequiresMountsFor=/home/abdulhaleem/containers /mnt/data /mnt/Vault
+RequiresMountsFor=/home/YOUR_USER/containers /mnt/data /mnt/Vault
 ```
 
 - `network-online.target`: Ensures the host actually has its network connection established before bringing up the containers.
-- `RequiresMountsFor`: Forces Docker to wait until the primary container directory (`/home/abdulhaleem/containers`) is fully mounted, completely eliminating the AdGuard Home exit code 127. The media drives (`/mnt/data` and `/mnt/Vault`) are included here simply to protect the rest of the media stack from the same exact failure.
+- `RequiresMountsFor`: Forces Docker to wait until the primary container directory (`/home/YOUR_USER/containers`) is fully mounted, completely eliminating the AdGuard Home exit code 127. The media drives (`/mnt/data` and `/mnt/Vault`) are included here simply to protect the rest of the media stack from the same exact failure.
 
 Reload the daemon to apply it:
 ```bash

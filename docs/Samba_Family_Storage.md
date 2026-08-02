@@ -128,3 +128,23 @@ The real test is trying to connect into a share you shouldn't have access to:
 smbclient //localhost/PERSON2 -U person1
 ```
 A correctly enforced boundary returns `tree connect failed: NT_STATUS_ACCESS_DENIED`.
+
+## Troubleshooting: AppArmor denials
+
+On Arch-based distros, Samba's AppArmor profile only confines shares in standard locations like `/home` by default. A custom mount like `/mnt/data` sits outside that, and the profile blocks the daemon from reaching it entirely, independent of whatever the actual filesystem permissions say.
+
+Symptom: `NT_STATUS_ACCESS_DENIED` on connect even though `chmod`/`chown` on the subvolume look correct. Check `sudo systemctl status smb`, a `vfs_ChDir(...) failed: Permission denied` line confirms it's AppArmor, not a real permissions problem.
+
+Fix, add an explicit exception rather than disabling the profile:
+```bash
+sudo nano /etc/apparmor.d/local/usr.sbin.smbd
+```
+```text
+/mnt/data/ r,
+/mnt/data/** lrwk,
+```
+```bash
+sudo apparmor_parser -r /etc/apparmor.d/usr.sbin.smbd
+sudo systemctl restart smb
+```
+

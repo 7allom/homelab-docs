@@ -12,9 +12,11 @@
      valid users = person1
      read only = no
      browsable = yes
+     vfs objects = btrfs
 
   [shared]
      path = /mnt/data/family-files/shared
      valid users = person1, person2, user
      read only = no
      browsable = yes
+     vfs objects = btrfs
