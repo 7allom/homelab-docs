@@ -70,6 +70,19 @@ sudo btrfs qgroup show -pcre /mnt/data
 ```
 That shows every qgroup, its current usage, and its limit in one table.
 
+Worth knowing this quota is enforced correctly at the filesystem level regardless, but Windows Explorer's disk-space display won't reflect it on its own. Samba's default disk-free reporting relies on the standard Linux quota API, which Btrfs qgroups don't hook into at all, so a share shows the full underlying volume size instead of the actual 20GB limit. The write still fails once the qgroup limit is hit, only the displayed number is wrong.
+
+To make the displayed number accurate too, Samba supports a `dfree command`, a script it calls instead of trusting the filesystem's own numbers. `scripts/samba-btrfs-dfree.sh` in this repo does that, reading the qgroup's actual limit and usage:
+```bash
+sudo cp scripts/samba-btrfs-dfree.sh /usr/local/bin/
+sudo chmod +x /usr/local/bin/samba-btrfs-dfree.sh
+```
+Then point Samba at it in `[global]`:
+```ini
+dfree command = /usr/local/bin/samba-btrfs-dfree.sh
+```
+Optional, the quota already enforces correctly without it.
+
 ## Config
 
 Add the share blocks below `[global]` in `/etc/samba/smb.conf`:
@@ -79,13 +92,17 @@ Add the share blocks below `[global]` in `/etc/samba/smb.conf`:
    valid users = person1
    read only = no
    browsable = yes
+   vfs objects = btrfs
 
 [shared]
    path = /mnt/data/family-files/shared
    valid users = person1, person2, user
    read only = no
    browsable = yes
+   vfs objects = btrfs
 ```
+
+`vfs objects = btrfs` enables Samba's Btrfs-specific VFS module. Its main benefit here is copy offload: when a client copies a file within the same share, Btrfs can clone the underlying data blocks instead of Samba physically reading and rewriting the whole file, near-instant, no extra disk I/O. It requires the share path to already be a Btrfs subvolume, which every share here already is.
 
 `valid users` on each share is the actual permission boundary, each person only sees their own private folder plus the shared one, enforced by Samba itself, not a UI setting.
 
@@ -147,4 +164,3 @@ sudo nano /etc/apparmor.d/local/usr.sbin.smbd
 sudo apparmor_parser -r /etc/apparmor.d/usr.sbin.smbd
 sudo systemctl restart smb
 ```
-
