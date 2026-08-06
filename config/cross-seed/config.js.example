@@ -1,0 +1,22 @@
+module.exports = {
+  torznab: [
+    "http://prowlarr:9696/1/api?apikey=YOUR_PROWLARR_API_KEY",
+    "http://prowlarr:9696/2/api?apikey=YOUR_PROWLARR_API_KEY",
+  ],
+  sonarr: ["http://sonarr:8989/?apikey=YOUR_SONARR_API_KEY"],
+  radarr: ["http://radarr:7878/?apikey=YOUR_RADARR_API_KEY"],
+  torrentClients: [
+    "qbittorrent:http://qbittorrent:8090",
+  ],
+  dataDirs: [
+    "/vault/torrents",
+    "/data/torrents",
+    "/personal/torrents",
+  ],
+  linkDirs: ["/data/cross-seeds", "/personal/cross-seeds", "/vault/cross-seeds"],
+  linkType: "hardlink",
+  matchMode: "partial",
+  fuzzySizeThreshold: 0.02,
+  rssCadence: "30 minutes",
+  searchCadence: "1 day",
+};

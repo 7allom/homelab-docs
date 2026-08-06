@@ -208,6 +208,21 @@ services:
       - /mnt/data/personalMedia:/personal
     restart: unless-stopped
 
+  cross-seed:
+    image: ghcr.io/cross-seed/cross-seed:latest
+    container_name: cross-seed
+    <<: *default-logging
+    user: "${PUID}:${PGID}"
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - ${DOCKER_ROOT}/cross-seed/config:/config
+      - ${MEDIA_ROOT}:/data
+      - /mnt/data/personalMedia:/personal
+      - ${HDD_ROOT}:/vault
+    command: daemon
+    restart: unless-stopped
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus

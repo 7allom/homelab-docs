@@ -26,8 +26,8 @@ Configuration conventions: [Environment Variables](docs/Environment_Variables_Te
 **Media automation**
 - Playback: `jellyfin` (hardware-accelerated transcoding via `/dev/dri`), `jellyseerr`
 - Library management: `sonarr`, `radarr`, `bazarr`
-- Acquisition: `prowlarr`, `flaresolverr`, `qbittorrent`
-- [Full writeup](docs/Docker_Arr_Stack.md)
+- Acquisition: `prowlarr`, `flaresolverr`, `qbittorrent`, `cross-seed`
+- [Full writeup](docs/Docker_Arr_Stack.md), [Cross-Seed](docs/Cross_Seed.md)
 
 **Family storage**
 - Samba: per-user network shares with Btrfs qgroup quotas, host-level service rather than a container. [Details](docs/Samba_Family_Storage.md)
