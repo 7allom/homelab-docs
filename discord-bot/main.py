@@ -34,6 +34,7 @@ STUDY_ROLE_ID = 123456789012345678
 
 # --- File Paths ---
 JAIL_FILE = "/app/data/jail_data.json"
+STUDY_FILE = "/app/data/study_data.json"
 
 # --- Bot Setup ---
 intents = discord.Intents.default()
@@ -83,6 +84,20 @@ ffmpeg_options = {
 
 ytdl = yt_dlp.YoutubeDL(ytdl_format_options)
 
+def load_study_data():
+    """Reads the persistent study data (saved roles) from the local JSON file."""
+    if os.path.exists(STUDY_FILE):
+        with open(STUDY_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_study_data():
+    """Writes the current study data to the local JSON file."""
+    with open(STUDY_FILE, "w") as f:
+        json.dump(study_data, f)
+
+# Load the studying users and their roles into memory
+study_data = load_study_data()
 
 # ==========================================
 # 2. HELPER FUNCTIONS
@@ -570,7 +585,7 @@ async def flashbang(interaction: discord.Interaction, target: discord.Member):
 
 @bot.tree.command(
     name="gostudy",
-    description="Force someone to go study. Mutes text and bans from VC.",
+    description="Force someone to go study. Strips their roles, mutes text, and bans from VC."
 )
 @app_commands.describe(target="The student who needs to focus")
 @app_commands.checks.has_permissions(administrator=True)
@@ -595,9 +610,26 @@ async def gostudy(interaction: discord.Interaction, target: discord.Member):
         return
 
     try:
+        await interaction.response.defer() # Defer in case role removal takes a second
+
+        # 1. Identify roles to remove (ignore @everyone and roles higher than the bot)
+        bot_top_role = interaction.guild.me.top_role
+        roles_to_remove = [
+            role for role in target.roles
+            if role.name != "@everyone" and role < bot_top_role and role.id != STUDY_ROLE_ID
+        ]
+
+        # 2. Save role IDs to our persistent dictionary
+        role_ids = [role.id for role in roles_to_remove]
+        study_data[str(target.id)] = role_ids
+        save_study_data()
+
+        # 3. Strip old roles and add the Study role
+        await target.remove_roles(*roles_to_remove)
         await target.add_roles(study_role)
-        await interaction.response.send_message(
-            f"📚 {target.mention} has been banished to the study zone. No typing, no talking."
+
+        await interaction.followup.send(
+            f"📚 {target.mention} has been stripped of their ranks and banished to the study zone. No typing, no talking."
         )
 
         # Force disconnect if they are in a voice channel
@@ -605,27 +637,61 @@ async def gostudy(interaction: discord.Interaction, target: discord.Member):
             await target.move_to(None)
 
     except discord.Forbidden:
-        await interaction.response.send_message(
-            "I don't have permission to assign that role. Make sure my bot role is higher than the Study role in server settings!",
-            ephemeral=True,
+        await interaction.followup.send(
+            "I don't have permission to assign/remove roles for that user. Make sure my bot role is placed higher than theirs in the server settings!"
         )
+    except Exception as e:
+        print(f"GoStudy Error: {e}")
+        await interaction.followup.send("An error occurred while sending them to study.")
 
 
-@bot.tree.command(name="endstudy", description="Allow a user to return to society.")
+@bot.tree.command(name="endstudy", description="Allow a user to return to society and restore their roles.")
 @app_commands.describe(target="The student to release")
 @app_commands.checks.has_permissions(administrator=True)
 async def endstudy(interaction: discord.Interaction, target: discord.Member):
     study_role = interaction.guild.get_role(STUDY_ROLE_ID)
+    user_id_str = str(target.id)
 
-    if study_role in target.roles:
-        await target.remove_roles(study_role)
-        await interaction.response.send_message(
-            f"🎮 {target.mention} is done studying. Welcome back to the grid."
-        )
-    else:
+    if study_role not in target.roles and user_id_str not in study_data:
         await interaction.response.send_message(
             f"{target.display_name} isn't even in study mode.", ephemeral=True
         )
+        return
+
+    try:
+        await interaction.response.defer()
+
+        # 1. Remove the study role
+        if study_role in target.roles:
+            await target.remove_roles(study_role)
+
+        # 2. Fetch their saved roles
+        saved_role_ids = study_data.get(user_id_str, [])
+        roles_to_restore = []
+
+        for r_id in saved_role_ids:
+            role = interaction.guild.get_role(r_id)
+            if role:
+                roles_to_restore.append(role)
+
+        # 3. Restore the roles
+        if roles_to_restore:
+            await target.add_roles(*roles_to_restore)
+
+        # 4. Clean up the database
+        if user_id_str in study_data:
+            del study_data[user_id_str]
+            save_study_data()
+
+        await interaction.followup.send(
+            f"🎮 {target.mention} is done studying. Ranks restored. Welcome back to the grid."
+        )
+
+    except discord.Forbidden:
+        await interaction.followup.send("I don't have permission to restore their roles.")
+    except Exception as e:
+        print(f"EndStudy Error: {e}")
+        await interaction.followup.send("Failed to restore their previous life.")
 
 
 # ==========================================

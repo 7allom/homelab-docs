@@ -6,7 +6,7 @@ Runs on `network_mode: host`. Discord's voice API relies heavily on real-time, d
 
 - Build context: `./discord-bot` (the Dockerfile compiles `libopus`/`libsodium` for voice support)
 - Secrets (`BOT_TOKEN`, `GEMINI_API_KEY`) are isolated in `./discord-bot/.env`, separate from the main stack's `.env`
-- Persistent data: `${DOCKER_ROOT}/discord-bot/data:/app/data`, stores `jail_data.json` so moderation state survives container rebuilds
+- Persistent data: `${DOCKER_ROOT}/discord-bot/data:/app/data`, stores `jail_data.json` and `study_data.json` so moderation state survives container rebuilds
 
 ## Features
 
@@ -25,4 +25,4 @@ Runs on `network_mode: host`. Discord's voice API relies heavily on real-time, d
 **Moderation**
 - `/jail`, `/unjail`: restricts a user to a specific voice channel, actively dragging them back if they attempt to switch channels
 - `/flashbang`: brief, audio-based moderation action that temporarily displaces a user, plays a sound file, and returns them
-- `/gostudy`, `/endstudy`: enforces focus by assigning a designated study role that mutes text access and forcibly disconnects the target from active voice channels
+- `/gostudy`, `/endstudy`: enforces focus by stripping every role a user currently holds (except `@everyone` and anything positioned above the bot's own role, which it can't touch anyway), saving them to `study_data.json`, then assigning a study role that mutes text access and disconnects them from voice. `/endstudy` restores exactly the roles that were saved. Stripping the roles outright, rather than just adding the study role on top, was necessary because a user's other roles could still grant channel access the study role's own permissions didn't override.
