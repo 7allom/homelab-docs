@@ -5,14 +5,24 @@ PrivateKey = YOUR_private_key
 Jc = 4
 Jmin = 50
 Jmax = 1000
-S1 = 70
+
+S1 = 64
 S2 = 40
-H1 = 205634591
-H2 = 328080004
-H3 = 111166345
-H4 = 824364230
-PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -s 10.99.99.0/24 -o enp4s0 -j MASQUERADE
+S3 = 30
+S4 = 25
+
+H1 = 100000000-200000000
+H2 = 300000000-400000000
+H3 = 500000000-600000000
+H4 = 700000000-900000000
+I1 = <r 128>
+
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -s 10.99.99.0/24 -o eth0 -j MASQUERADE
 PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -s 10.99.99.0/24 -o eth0 -j MASQUERADE
+
+HeaderProtectionKey = YOUR_HeaderProtectionKey
+ContentPaddingAddition = 16-128
+
 [Peer]
 PublicKey = PEER_public_key
 AllowedIPs = 10.99.99.2/32
