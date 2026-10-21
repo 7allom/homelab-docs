@@ -1,13 +1,12 @@
 #!/bin/bash
 
 TOKEN="YOUR_DUCKDNS_TOKEN"
-DOMAIN="YOUR_DUCKDNS_DOMAIN"
+DOMAIN="YOUR_DOMAIN"
 
-# Ask ifconfig.me what your public IPs are
+# 1. Fetch public IPv4 only
 MY_IPV4=$(curl -s -4 ifconfig.me)
-MY_IPV6=$(curl -s -6 ifconfig.me)
 
-# Fire the API request to update records
-if [ -n "$MY_IPV4" ] && [ -n "$MY_IPV6" ]; then
-    curl -s "https://www.duckdns.org/update?domains=${DOMAIN}&token=${TOKEN}&ip=${MY_IPV4}&ipv6=${MY_IPV6}" > /dev/null
+# 2. Push IPv4 only (omitting ipv6 ensures no AAAA record is updated)
+if [ -n "$MY_IPV4" ]; then
+    curl -s "https://www.duckdns.org/update?domains=${DOMAIN}&token=${TOKEN}&ip=${MY_IPV4}" > /dev/null
 fi
