@@ -2,9 +2,9 @@
 
 Nightly, zero-downtime, end-to-end encrypted backup of the Vaultwarden database to Cloudflare R2. Uses `sqlite3` for the live snapshot, `rclone` for encryption and transfer, and `systemd` for scheduling.
 
-- Data path: `~/containers/vaultwarden/data`
+- Data path: `/home/YOUR_USER/containers/vaultwarden/data`
 - R2 bucket: `user-vault-backups`
-- Rclone config: `~/.config/rclone/rclone.conf`
+- Rclone config: `/home/YOUR_USER/.config/rclone/rclone.conf`
 
 ## Rclone configuration
 Two layers: a base connection to R2, wrapped in a local encryption layer.
@@ -21,7 +21,7 @@ The encryption password and salt for `vault_secure` are stored in Vaultwarden it
 ```bash
 #!/bin/bash
 
-VAULT_DATA_DIR="~/containers/vaultwarden/data"
+VAULT_DATA_DIR="/home/YOUR_USER/containers/vaultwarden/data"
 BACKUP_TEMP_DIR="/tmp/vault_backup_tmp"
 DATE=$(date +%Y-%m-%d_%H-%M-%S)
 
@@ -30,3 +30,10 @@ DATE=$(date +%Y-%m-%d_%H-%M-%S)
 ```
 
 Live snapshotting was chosen deliberately over stopping the container. Vaultwarden's uptime matters more than perfect snapshot consistency, and SQLite's online backup API handles concurrent access safely.
+
+## Retention & Storage Lifecycle
+Daily archives accumulate continuously in the R2 bucket. Because each snapshot uses a unique timestamp filename, archives are never overwritten automatically.
+
+Retention is managed through Cloudflare R2 bucket lifecycle rules:
+- Target: Entire bucket
+- Action: Delete objects older than 60 days

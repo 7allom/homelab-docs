@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration paths
-VAULT_DATA_DIR="~/containers/vaultwarden/data" # Adjust to match your actual vaultwarden /data path
+VAULT_DATA_DIR="/home/YOUR_USER/containers/vaultwarden/data" # Adjust to match your actual vaultwarden /data path
 BACKUP_TEMP_DIR="/tmp/vault_backup_tmp"
 DATE=$(date +%Y-%m-%d_%H-%M-%S)
 BACKUP_NAME="vaultwarden_backup_${DATE}.tar.gz"
