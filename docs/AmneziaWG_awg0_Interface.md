@@ -34,7 +34,7 @@ Works the same for a phone or a laptop, just change `PEER_NAME` and bump the oct
 
 ```bash
 PEER_NAME="laptop"        # or "mobile", "tablet", whatever
-ENDPOINT_PORT="443"
+ENDPOINT_PORT="443" 
 CONF=/etc/amnezia/amneziawg/awg0.conf
 
 # next free octet = highest one already used + 1

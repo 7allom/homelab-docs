@@ -6,7 +6,7 @@ Documentation for a self-hosted home server running on CachyOS. The architecture
 
 ## Network & Edge
 - Routing: [Network Routing & Remote Access](docs/Network_Routing.md), [DuckDNS Automation](docs/DuckDNS_Automation.md)
-Access Point: TP-Link router in AP mode (bridged, single subnet `192.168.1.0/24`)
+- Access Point: TP-Link router in AP mode (bridged, single subnet `192.168.1.0/24`)
 - Host: static IP `192.168.1.10/24`
 - DNS / ad-blocking: `adguardhome`, bound directly to the host interface
 

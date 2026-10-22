@@ -78,10 +78,4 @@
         import vpn_only
         reverse_proxy grafana:3000
     }
-
-    @ntfy host ntfy.YOUR_DOMAIN.duckdns.org
-    handle @ntfy {
-        import vpn_only
-        reverse_proxy ntfy:80
-    }
 }

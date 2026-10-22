@@ -1,6 +1,6 @@
 [Interface]
 Address = 10.99.99.1/24
-ListenPort = 443
+ListenPort = 51820
 PrivateKey = YOUR_private_key
 Jc = 4
 Jmin = 50
