@@ -11,7 +11,7 @@ Access Point: TP-Link router in AP mode (bridged, single subnet `192.168.1.0/24`
 - DNS / ad-blocking: `adguardhome`, bound directly to the host interface
 
 ## Security
-- [UFW Firewall Rules](docs/UFW_Firewall_Rules.md): ports 22/tcp, 51820/udp
+- [UFW Firewall Rules](docs/UFW_Firewall_Rules.md): SSH only open to VPN (`10.99.99.0/24`), 51820/udp
 - [CrowdSec Configuration](docs/CrowdSec_Configuration.md): intrusion detection and automated banning, v1.7.8
 - [AppArmor Profiles](docs/AppArmor_Profiles.md): mandatory access control for host-networked containers
 - [AmneziaWG VPN](docs/AmneziaWG_awg0_Interface.md): DPI-resistant WireGuard variant

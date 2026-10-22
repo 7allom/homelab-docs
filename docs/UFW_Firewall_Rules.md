@@ -6,10 +6,10 @@ Docker manipulates `iptables` directly, bypassing UFW entirely. Published contai
 ```bash
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
-sudo ufw allow from 10.99.99.0/24 22/tcp        # SSH
-sudo ufw allow 51820/udp     # AmneziaWG
-sudo ufw allow from 192.168.1.0/24 to any port 445   # Samba, LAN
-sudo ufw allow from 10.99.99.0/24 to any port 445    # Samba, VPN
+sudo ufw allow from 10.99.99.0/24 to any port 22 proto tcp   # SSH, VPN only
+sudo ufw allow 51820/udp                                     # AmneziaWG
+sudo ufw allow from 192.168.1.0/24 to any port 445          # Samba, LAN
+sudo ufw allow from 10.99.99.0/24 to any port 445           # Samba, VPN
 sudo ufw enable
 ```
 
