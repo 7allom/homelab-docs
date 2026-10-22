@@ -23,7 +23,7 @@ sudo tee /etc/samba/smb.conf << 'EOF'
    server string = Homelab Family Storage
    security = user
    map to guest = never
-   hosts allow = 192.168.0.0/24 10.99.99.0/24
+   hosts allow = 192.168.1.0/24 10.99.99.0/24
    hosts deny = 0.0.0.0/0
    smb encrypt = required
 EOF
@@ -124,15 +124,15 @@ smbclient -L localhost -U person1
 
 Scoped to LAN and VPN only, same trust boundary as the rest of the stack, never exposed publicly:
 ```bash
-sudo ufw allow from 192.168.0.0/24 to any port 445
+sudo ufw allow from 192.168.1.0/24 to any port 445
 sudo ufw allow from 10.99.99.0/24 to any port 445
 ```
 
 ## Connecting
 
-Windows: `\\192.168.0.109\person1` in File Explorer.
-Mac: Finder → Go → Connect to Server → `smb://192.168.0.109/person1`.
-Linux: `smb://192.168.0.109/person1` in the file manager, or `smbclient //192.168.0.109/person1 -U person1` from a terminal.
+Windows: `\\192.168.1.10\person1` in File Explorer.
+Mac: Finder → Go → Connect to Server → `smb://192.168.1.10/person1`.
+Linux: `smb://192.168.1.10/person1` in the file manager, or `smbclient //192.168.1.10/person1 -U person1` from a terminal.
 
 Both prompt for the Samba username and password set with `smbpasswd`, separate from any system login. Files opened directly from the mounted share edit in place over the network, no download-edit-reupload step, that part works the same as any local file.
 

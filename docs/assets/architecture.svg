@@ -21,8 +21,8 @@
 
   <!-- Double NAT -->
   <rect x="410" y="192" width="280" height="56" rx="8" fill="#161b22" stroke="#484f58" stroke-width="1"/>
-  <text x="550" y="214" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="bold">Double NAT (ISP → TP-Link)</text>
-  <text x="550" y="232" text-anchor="middle" fill="#8b949e" font-size="11">only VPN port forwarded</text>
+  <text x="550" y="214" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="bold">ISP Gateway (Single NAT)</text>
+  <text x="550" y="232" text-anchor="middle" fill="#8b949e" font-size="11">port forwarded to 192.168.1.10</text>
 
   <line x1="550" y1="248" x2="550" y2="284" stroke="#484f58" stroke-width="1.5" marker-end="url(#arrow)"/>
 

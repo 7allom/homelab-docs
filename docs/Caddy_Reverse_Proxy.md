@@ -8,7 +8,7 @@ Management interfaces (Portainer, qBittorrent, the *Arr stack) aren't published 
 
 ```caddyfile
 (vpn_only) {
-    @denied not remote_ip 10.99.99.0/24 127.0.0.1 172.18.0.0/16 192.168.0.109
+    @denied not remote_ip 10.99.99.0/24 127.0.0.1 172.18.0.0/16 192.168.1.10
     abort @denied
 }
 ```
@@ -23,14 +23,14 @@ Ports 80 and 443 remain closed at the router, which rules out the standard HTTP-
 
 Because routing relies on wildcard subdomains, local devices need a way to resolve them internally:
 
-- AdGuard Home has a DNS rewrite for `*.mydomain.duckdns.org` pointing to `192.168.0.109`, directing VPN and LAN clients to the host.
+- AdGuard Home has a DNS rewrite for `*.mydomain.duckdns.org` pointing to `192.168.1.10`, directing VPN and LAN clients to the host.
 - The host's `/etc/hosts` maps the same subdomains to Caddy's internal Docker IP (`172.18.0.200`) for host-to-container traffic.
 
 ## Routing configuration
 
 ```caddyfile
 (vpn_only) {
-    @denied not remote_ip 10.99.99.0/24 127.0.0.1 172.18.0.0/16 192.168.0.109
+    @denied not remote_ip 10.99.99.0/24 127.0.0.1 172.18.0.0/16 192.168.1.10
     abort @denied
 }
 

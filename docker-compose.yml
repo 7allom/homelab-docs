@@ -14,10 +14,10 @@ services:
       - ${DOCKER_ROOT}/adguardhome/work:/opt/adguardhome/work
       - ${DOCKER_ROOT}/adguardhome/conf:/opt/adguardhome/conf
     ports:
-      - "192.168.0.109:53:53/tcp"
-      - "192.168.0.109:53:53/udp"
-      - "192.168.0.109:3000:3000/tcp"
-      - "192.168.0.109:8083:80/tcp"
+      - "192.168.1.10:53:53/tcp"
+      - "192.168.1.10:53:53/udp"
+      - "192.168.1.10:3000:3000/tcp"
+      - "192.168.1.10:8083:80/tcp"
     environment:
       - TZ=${TZ}
 

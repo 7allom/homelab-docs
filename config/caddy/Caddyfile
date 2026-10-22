@@ -9,7 +9,7 @@
 
 # 1. Define the reusable VPN-only security snippet
 (vpn_only) {
-    @denied not remote_ip 10.99.99.0/24 127.0.0.1 172.18.0.0/16 192.168.0.109
+    @denied not remote_ip 10.99.99.0/24 127.0.0.1 172.18.0.0/16 192.168.1.10
     abort @denied
 }
 
@@ -77,5 +77,11 @@
     handle @grafana {
         import vpn_only
         reverse_proxy grafana:3000
+    }
+
+    @ntfy host ntfy.YOUR_DOMAIN.duckdns.org
+    handle @ntfy {
+        import vpn_only
+        reverse_proxy ntfy:80
     }
 }

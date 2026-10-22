@@ -5,9 +5,9 @@
 Documentation for a self-hosted home server running on CachyOS. The architecture centers on containerized service management, strict edge routing, and keeping internal services off the LAN entirely. Access is gated through a bare-metal VPN and a reverse proxy rather than exposed ports.
 
 ## Network & Edge
-- Routing: [Double NAT Routing](docs/Double_NAT_Routing.md), [DuckDNS Automation](docs/DuckDNS_Automation.md)
-- Hardware firewall: TP-Link sub-router
-- Host: static IP `192.168.0.109/24`
+- Routing: [Network Routing & Remote Access](docs/Network_Routing.md), [DuckDNS Automation](docs/DuckDNS_Automation.md)
+Access Point: TP-Link router in AP mode (bridged, single subnet `192.168.1.0/24`)
+- Host: static IP `192.168.1.10/24`
 - DNS / ad-blocking: `adguardhome`, bound directly to the host interface
 
 ## Security
