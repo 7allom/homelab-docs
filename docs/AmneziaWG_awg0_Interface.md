@@ -3,10 +3,9 @@
 Bare-metal VPN, run outside of Docker. While standard WireGuard is exceptionally fast, its static headers and predictable packet sizes are easily flagged by Deep Packet Inspection (DPI) firewalls. AmneziaWG resolves this by modifying headers and randomizing packet padding, making the tunnel indistinguishable from normal UDP traffic without sacrificing encryption speed.
 
 - Config: `/etc/amnezia/amneziawg/awg0.conf`
-- Port: `443/udp` 
+- Port: `51820/udp` 
 - Service: `sudo systemctl enable --now awg-quick@awg0`
 
-> Using port 443 can help bypass stateless firewalls
 ### Firewall and Routing Rules (PostUp / PostDown)
 
 To allow connected clients to access the internet, `iptables` routing rules are required within the interface configuration.

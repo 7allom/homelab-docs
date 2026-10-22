@@ -23,7 +23,7 @@ fi
 tar -czf "/tmp/$BACKUP_NAME" -C "$BACKUP_TEMP_DIR" .
 
 # Encrypt locally and sync to Cloudflare R2 via Rclone
-rclone --config ~/.config/rclone/rclone.conf copy "/tmp/$BACKUP_NAME" vault_secure:
+rclone --config /home/YOUR_USER/.config/rclone/rclone.conf copy "/tmp/$BACKUP_NAME" vault_secure:
 
 # Cleanup local temporary files
 rm -rf "$BACKUP_TEMP_DIR"
