@@ -12,7 +12,7 @@ Documentation for a self-hosted home server running on CachyOS. The architecture
 
 ## Security
 - [UFW Firewall Rules](docs/UFW_Firewall_Rules.md): SSH only open to VPN (`10.99.99.0/24`), 51820/udp
-- [CrowdSec Configuration](docs/CrowdSec_Configuration.md): intrusion detection and automated banning, v1.7.8
+- [CrowdSec Configuration](docs/CrowdSec_Configuration.md): intrusion detection and automated banning
 - [AppArmor Profiles](docs/AppArmor_Profiles.md): mandatory access control for host-networked containers
 - [AmneziaWG VPN](docs/AmneziaWG_awg0_Interface.md): DPI-resistant WireGuard variant
 
